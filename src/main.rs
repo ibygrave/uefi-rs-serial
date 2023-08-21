@@ -2,11 +2,14 @@
 #![no_std]
 
 use log::info;
-use uefi::prelude::*;
 use uefi::proto::console::serial::Serial;
 use uefi::proto::device_path::text::DevicePathFromText;
 use uefi::table::boot::SearchType;
 use uefi::Identify;
+use uefi::{prelude::*, CStr16};
+
+const SERIAL_DEVICE_PATH: &CStr16 =
+    cstr16!("PciRoot(0x0)/Pci(0x1,0x0)/Serial(0x1)/Uart(115200,8,N,1)");
 
 fn test_serial(boot_services: &BootServices) {
     let device_path_from_text_handle = *boot_services
@@ -22,9 +25,7 @@ fn test_serial(boot_services: &BootServices) {
     let serial_handle = boot_services
         .locate_device_path::<Serial>(
             &mut device_path_from_text
-                .convert_text_to_device_path(cstr16!(
-                    "PciRoot(0x0)/Pci(0x1,0x0)/Serial(0x1)/Uart(115200,8,N,1)"
-                ))
+                .convert_text_to_device_path(SERIAL_DEVICE_PATH)
                 .expect("Device path not valid"),
         )
         .expect("Device path not found");
