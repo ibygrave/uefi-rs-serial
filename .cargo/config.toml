@@ -1,0 +1,5 @@
+[build]
+target = "x86_64-unknown-uefi"
+
+[target.'cfg(all())']
+runner = "./run.sh"

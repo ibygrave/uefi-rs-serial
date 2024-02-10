@@ -1,7 +1,9 @@
 #!/bin/bash
-HERE=$(realpath $(dirname $0))
+set -ex
 
-cargo build --target x86_64-unknown-uefi
+exe=$1
+
+HERE=$(realpath $(dirname $0))
 
 mkdir -p $HERE/downloads
 mkdir -p $HERE/esp/efi/boot
@@ -23,7 +25,7 @@ then
     $HERE/flash/OVMF_VARS.fd
 fi
 
-cp $HERE/target/x86_64-unknown-uefi/debug/uefi-rs-serial.efi $HERE/esp/efi/boot/bootx64.efi
+cp $exe $HERE/esp/efi/boot/bootx64.efi
 
 qemu-system-x86_64 \
   -drive if=pflash,format=raw,readonly=on,file=$HERE/flash/OVMF_CODE.fd \
